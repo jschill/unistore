@@ -1,5 +1,5 @@
 import { h, Component } from 'preact';
-import { assign, mapActions, select } from '../util';
+import { assign, mapActions, mapNamespacedActions, select } from '../util';
 
 /**
  * Wire a component up to the store. Passes state as props, re-renders on change.
@@ -15,7 +15,7 @@ import { assign, mapActions, select } from '../util';
  * @connect( state => ({ foo: state.foo, bar: state.bar }) )
  * export class Foo { render({ foo, bar }) { } }
  */
-export function connect(mapStateToProps, actions) {
+export function connect(mapStateToProps, actions, mapActionsFn = mapActions) {
 	if (typeof mapStateToProps!='function') {
 		mapStateToProps = select(mapStateToProps || {});
 	}
@@ -23,7 +23,7 @@ export function connect(mapStateToProps, actions) {
 		function Wrapper(props, context) {
 			const store = context.store;
 			let state = mapStateToProps(store ? store.getState() : {}, props);
-			const boundActions = actions ? mapActions(actions, store) : { store };
+			const boundActions = actions ? mapActionsFn(actions, store) : { store };
 			let update = () => {
 				let mapped = mapStateToProps(store ? store.getState() : {}, props);
 				for (let i in mapped) if (mapped[i]!==state[i]) {
@@ -51,6 +51,9 @@ export function connect(mapStateToProps, actions) {
 	};
 }
 
+export function namespaceConnect(mapStateToProps, actions) {
+	return connect(mapStateToProps, actions, mapNamespacedActions);
+}
 
 /**
  * Provider exposes a store (passed as `props.store`) into context.

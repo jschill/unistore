@@ -8,6 +8,12 @@ export function mapActions(actions, store) {
 	return mapped;
 }
 
+export function mapNamespacedActions(actions, store) {
+	return actions ? Object.keys(actions).reduce((newMap, namespace) => {
+		newMap[namespace] = mapActions(actions[namespace], store);
+		return newMap;
+	}, {}) : {};
+}
 
 // select('foo,bar') creates a function of the form: ({ foo, bar }) => ({ foo, bar })
 export function select(properties) {
