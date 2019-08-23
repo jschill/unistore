@@ -12,6 +12,10 @@ declare module "unistore/preact" {
 		actions?: ActionCreator<K> | object
 	): (Child: Preact.ComponentConstructor<T & I, S> | Preact.AnyComponent<T & I, S>) => Preact.ComponentConstructor<T, S>;
 
+	export function namespaceConnect<T, S, K, I>(
+		mapStateToProps: string | Array<string> | StateMapper<T, K, I>,
+		actions?: ActionCreator<K> | object
+	): (Child: Preact.ComponentConstructor<T & I, S> | Preact.AnyComponent<T & I, S>) => Preact.ComponentConstructor<T, S>;
 
 	export interface ProviderProps<T> {
 		store: Store<T>;
